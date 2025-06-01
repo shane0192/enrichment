@@ -13,7 +13,19 @@ app.post("/lookup", async (req, res) => {
   const query = `${fullName} site:linkedin.com/in ${domain}`;
 
   try {
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await puppeteer.launch({
+      headless: "new",
+      args: [
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        '--disable-dev-shm-usage',
+        '--disable-accelerated-2d-canvas',
+        '--no-zygote',
+        '--single-process',
+        '--disable-gpu'
+      ],
+      executablePath: process.env.CHROMIUM_PATH || '/usr/bin/chromium'
+    });
     const page = await browser.newPage();
 
     // Step 1: Google search to find LinkedIn profile
